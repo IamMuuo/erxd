@@ -21,9 +21,10 @@ if(BUILD_TESTING)
   FetchContent_MakeAvailable(Catch2)
 endif()
 
-add_executable(erxd src/main.cpp)
+add_executable(erxd src/main.cpp src/backend_pool.cpp)
 
 target_compile_features(erxd PRIVATE cxx_std_20)
+target_include_directories(erxd PRIVATE ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(erxd PRIVATE Boost::system Threads::Threads)
 
 if(MSVC)
@@ -33,8 +34,9 @@ else()
 endif()
 
 if(BUILD_TESTING)
-  add_executable(erxd_tests tests/main_test.cpp)
+  add_executable(erxd_tests tests/main_test.cpp tests/backend_pool_test.cpp src/backend_pool.cpp)
   target_compile_features(erxd_tests PRIVATE cxx_std_20)
+  target_include_directories(erxd_tests PRIVATE ${PROJECT_SOURCE_DIR}/include)
   target_link_libraries(erxd_tests PRIVATE Catch2::Catch2WithMain Boost::system Threads::Threads)
 
   include(Catch)
