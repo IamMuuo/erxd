@@ -21,7 +21,7 @@ if(BUILD_TESTING)
   FetchContent_MakeAvailable(Catch2)
 endif()
 
-add_executable(erxd src/main.cpp src/backend_pool.cpp src/proxy_server.cpp)
+add_executable(erxd src/main.cpp src/backend_pool.cpp src/proxy_server.cpp src/http_session.cpp)
 
 target_compile_features(erxd PRIVATE cxx_std_20)
 target_include_directories(erxd PRIVATE ${PROJECT_SOURCE_DIR}/include)
