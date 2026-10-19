@@ -1,8 +1,6 @@
-#include <iostream>
+#include <erxd/proxy_server.hpp>
 
-int main(int argc, char *argv[]) {
-
-  std::cout << "Hello, world!\n";
-
-  return 0;
+int main() {
+  erxd::ProxyServer server;
+  server.run();
 }
