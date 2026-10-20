@@ -5,6 +5,8 @@
 
 #include <cstdint>
 
+#include <erxd/backend_pool.hpp>
+
 namespace erxd {
 
 class IProxyServer {
@@ -27,6 +29,7 @@ private:
 
   boost::asio::io_context io_context_;
   boost::asio::ip::tcp::acceptor acceptor_;
+  BackendPool backend_pool_;
   std::uint16_t port_;
 };
 

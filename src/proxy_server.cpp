@@ -1,5 +1,7 @@
 #include "erxd/proxy_server.hpp"
 
+#include <erxd/http_session.hpp>
+
 namespace erxd {
 
 ProxyServer::ProxyServer(std::uint16_t port)
@@ -16,7 +18,7 @@ void ProxyServer::accept_connection() {
   acceptor_.async_accept([this](const boost::system::error_code &error,
                                 boost::asio::ip::tcp::socket socket) {
     if (!error) {
-      socket.close();
+      std::make_shared<HttpSession>(std::move(socket), backend_pool_)->start();
     }
 
     if (acceptor_.is_open()) {

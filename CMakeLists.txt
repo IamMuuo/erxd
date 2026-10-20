@@ -34,7 +34,7 @@ else()
 endif()
 
 if(BUILD_TESTING)
-  add_executable(erxd_tests tests/main_test.cpp tests/backend_pool_test.cpp tests/proxy_server_test.cpp src/backend_pool.cpp src/proxy_server.cpp)
+  add_executable(erxd_tests tests/main_test.cpp tests/backend_pool_test.cpp tests/proxy_server_test.cpp src/backend_pool.cpp src/proxy_server.cpp src/http_session.cpp)
   target_compile_features(erxd_tests PRIVATE cxx_std_20)
   target_include_directories(erxd_tests PRIVATE ${PROJECT_SOURCE_DIR}/include)
   target_link_libraries(erxd_tests PRIVATE Catch2::Catch2WithMain Boost::system Threads::Threads)
