@@ -6,6 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(Threads REQUIRED)
+find_package(yaml-cpp CONFIG REQUIRED)
 
 include(CTest)
 
@@ -21,11 +22,11 @@ if(BUILD_TESTING)
   FetchContent_MakeAvailable(Catch2)
 endif()
 
-add_executable(erxd src/main.cpp src/backend_pool.cpp src/proxy_server.cpp src/http_session.cpp)
+add_executable(erxd src/main.cpp src/backend_pool.cpp src/proxy_server.cpp src/http_session.cpp src/config_loader.cpp)
 
 target_compile_features(erxd PRIVATE cxx_std_20)
 target_include_directories(erxd PRIVATE ${PROJECT_SOURCE_DIR}/include)
-target_link_libraries(erxd PRIVATE Boost::system Threads::Threads)
+target_link_libraries(erxd PRIVATE Boost::system Threads::Threads yaml-cpp::yaml-cpp)
 
 if(MSVC)
   target_compile_options(erxd PRIVATE /W4 /permissive-)
@@ -34,10 +35,10 @@ else()
 endif()
 
 if(BUILD_TESTING)
-  add_executable(erxd_tests tests/main_test.cpp tests/backend_pool_test.cpp tests/proxy_server_test.cpp tests/http_session_test.cpp src/backend_pool.cpp src/proxy_server.cpp src/http_session.cpp)
+  add_executable(erxd_tests tests/main_test.cpp tests/backend_pool_test.cpp tests/proxy_server_test.cpp tests/http_session_test.cpp tests/config_loader_test.cpp src/backend_pool.cpp src/proxy_server.cpp src/http_session.cpp src/config_loader.cpp)
   target_compile_features(erxd_tests PRIVATE cxx_std_20)
   target_include_directories(erxd_tests PRIVATE ${PROJECT_SOURCE_DIR}/include)
-  target_link_libraries(erxd_tests PRIVATE Catch2::Catch2WithMain Boost::system Threads::Threads)
+  target_link_libraries(erxd_tests PRIVATE Catch2::Catch2WithMain Boost::system Threads::Threads yaml-cpp::yaml-cpp)
 
   include(Catch)
   catch_discover_tests(erxd_tests)
