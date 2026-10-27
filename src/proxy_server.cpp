@@ -2,6 +2,8 @@
 
 #include <erxd/http_session.hpp>
 
+#include <utility>
+
 namespace erxd {
 
 ProxyServer::ProxyServer(std::uint16_t port)
@@ -13,6 +15,10 @@ ProxyServer::ProxyServer(std::uint16_t port)
 }
 
 std::uint16_t ProxyServer::port() const { return port_; }
+
+std::optional<BackendId> ProxyServer::add_backend(BackendSpec backend) {
+  return backend_pool_.add_backend(std::move(backend));
+}
 
 void ProxyServer::accept_connection() {
   acceptor_.async_accept([this](const boost::system::error_code &error,

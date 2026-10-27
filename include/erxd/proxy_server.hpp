@@ -4,6 +4,7 @@
 #include <boost/asio/io_context.hpp>
 
 #include <cstdint>
+#include <optional>
 
 #include <erxd/backend_pool.hpp>
 
@@ -22,6 +23,7 @@ public:
   explicit ProxyServer(std::uint16_t port = 1337);
 
   std::uint16_t port() const override;
+  std::optional<BackendId> add_backend(BackendSpec backend);
   void run() override;
 
 private:

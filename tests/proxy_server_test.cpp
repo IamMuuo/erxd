@@ -13,3 +13,11 @@ TEST_CASE("proxy server accepts a configured port") {
 
   REQUIRE(server.port() == 8080);
 }
+
+TEST_CASE("proxy server accepts backend configuration") {
+  erxd::ProxyServer server;
+
+  const auto id = server.add_backend({"127.0.0.1", 9001});
+
+  REQUIRE(id.has_value());
+}
