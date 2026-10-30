@@ -24,6 +24,9 @@ ConfigLoadResult parse(const YAML::Node& root) {
       if (listen["port"]) {
         config.listen.port = listen["port"].as<std::uint16_t>();
       }
+      if (config.listen.host.empty() || config.listen.port == 0) {
+        return failure("listen host and port must be valid");
+      }
     }
 
     const auto backends = root["backends"];
@@ -32,8 +35,12 @@ ConfigLoadResult parse(const YAML::Node& root) {
     }
 
     for (const auto& node : backends) {
-      config.backends.push_back({node["host"].as<std::string>(),
-                                 node["port"].as<std::uint16_t>()});
+      const auto host = node["host"].as<std::string>();
+      const auto port = node["port"].as<std::uint16_t>();
+      if (host.empty() || port == 0) {
+        return failure("backend host and port must be valid");
+      }
+      config.backends.push_back({host, port});
     }
 
     return ConfigLoadResult{std::move(config), {}};

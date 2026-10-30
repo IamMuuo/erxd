@@ -26,3 +26,13 @@ TEST_CASE("config loader returns an error for invalid configuration") {
   REQUIRE_FALSE(result);
   REQUIRE_FALSE(result.error.empty());
 }
+
+TEST_CASE("config loader rejects invalid backend ports") {
+  const auto result = erxd::ConfigLoader::from_yaml(
+      "backends:\n"
+      "  - host: 127.0.0.1\n"
+      "    port: 0\n");
+
+  REQUIRE_FALSE(result);
+  REQUIRE(result.error == "backend host and port must be valid");
+}
