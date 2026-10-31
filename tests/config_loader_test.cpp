@@ -2,6 +2,9 @@
 
 #include <erxd/config_loader.hpp>
 
+#include <cstdio>
+#include <fstream>
+
 TEST_CASE("config loader reads listen and backend settings") {
   const auto result = erxd::ConfigLoader::from_yaml(
       "listen:\n"
@@ -35,4 +38,20 @@ TEST_CASE("config loader rejects invalid backend ports") {
 
   REQUIRE_FALSE(result);
   REQUIRE(result.error == "backend host and port must be valid");
+}
+
+TEST_CASE("config loader reads a file") {
+  const char* path = "/tmp/erxd-config-loader-test.yaml";
+  {
+    std::ofstream file(path);
+    file << "backends:\n"
+            "  - host: 127.0.0.1\n"
+            "    port: 9001\n";
+  }
+
+  const auto result = erxd::ConfigLoader::from_file(path);
+  std::remove(path);
+
+  REQUIRE(result);
+  REQUIRE(result.config->backends.front().port == 9001);
 }
