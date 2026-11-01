@@ -63,6 +63,7 @@ TEST_CASE("HTTP session forwards a request and response") {
   const std::string request =
       "GET /health HTTP/1.1\r\nHost: localhost\r\n\r\n";
   boost::asio::write(client, boost::asio::buffer(request));
+
   io.run();
 
   boost::asio::streambuf response;

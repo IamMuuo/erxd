@@ -4,8 +4,23 @@
 #include <boost/asio/connect.hpp>
 #include <boost/asio/read_until.hpp>
 #include <boost/asio/write.hpp>
+#include <boost/log/trivial.hpp>
 
+#include <algorithm>
+#include <string>
 #include <utility>
+
+namespace {
+
+std::string request_line(const boost::asio::streambuf &request) {
+  const auto data = request.data();
+  const auto begin = boost::asio::buffers_begin(data);
+  const auto end = boost::asio::buffers_end(data);
+  const auto line_end = std::search(begin, end, "\r\n", "\r\n" + 2);
+  return std::string(begin, line_end);
+}
+
+} // namespace
 
 namespace erxd {
 
@@ -28,10 +43,13 @@ void HttpSession::read_request() {
 
         const auto backend = self->backend_pool_.next();
         if (!backend) {
-        (void)self->close();
+          (void)self->close();
           return;
         }
 
+        BOOST_LOG_TRIVIAL(info)
+            << "request " << request_line(self->request_) << " -> backend "
+            << backend->host << ':' << backend->port;
         self->connect_backend(*backend);
       });
 }
@@ -99,7 +117,7 @@ void HttpSession::write_response() {
   auto self = shared_from_this();
   boost::asio::async_write(client_, response_,
                            [self](const boost::system::error_code &,
-                           std::size_t) { (void)self->close(); });
+                                  std::size_t) { (void)self->close(); });
 }
 
 bool HttpSession::close() {

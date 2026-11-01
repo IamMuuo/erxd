@@ -1,6 +1,8 @@
 #include <erxd/config_loader.hpp>
 #include <erxd/proxy_server.hpp>
 
+#include <boost/log/trivial.hpp>
+
 #include <iostream>
 #include <string>
 
@@ -22,5 +24,6 @@ int main(int argc, char* argv[]) {
     }
   }
 
+  BOOST_LOG_TRIVIAL(info) << "proxy server started on port " << server.port();
   server.run();
 }

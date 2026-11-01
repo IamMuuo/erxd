@@ -4,7 +4,13 @@ project(erxd LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(Boost REQUIRED COMPONENTS system)
+configure_file(
+  ${PROJECT_SOURCE_DIR}/config/proxy.yaml
+  ${CMAKE_CURRENT_BINARY_DIR}/config/proxy.yaml
+  COPYONLY
+)
+
+find_package(Boost REQUIRED COMPONENTS system log log_setup thread)
 find_package(Threads REQUIRED)
 find_package(yaml-cpp CONFIG REQUIRED)
 
@@ -26,7 +32,7 @@ add_executable(erxd src/main.cpp src/backend_pool.cpp src/proxy_server.cpp src/h
 
 target_compile_features(erxd PRIVATE cxx_std_20)
 target_include_directories(erxd PRIVATE ${PROJECT_SOURCE_DIR}/include)
-target_link_libraries(erxd PRIVATE Boost::system Threads::Threads yaml-cpp::yaml-cpp)
+target_link_libraries(erxd PRIVATE Boost::system Boost::log Boost::log_setup Boost::thread Threads::Threads yaml-cpp::yaml-cpp)
 
 if(MSVC)
   target_compile_options(erxd PRIVATE /W4 /permissive-)
@@ -38,7 +44,7 @@ if(BUILD_TESTING)
   add_executable(erxd_tests tests/main_test.cpp tests/backend_pool_test.cpp tests/proxy_server_test.cpp tests/http_session_test.cpp tests/config_loader_test.cpp src/backend_pool.cpp src/proxy_server.cpp src/http_session.cpp src/config_loader.cpp)
   target_compile_features(erxd_tests PRIVATE cxx_std_20)
   target_include_directories(erxd_tests PRIVATE ${PROJECT_SOURCE_DIR}/include)
-  target_link_libraries(erxd_tests PRIVATE Catch2::Catch2WithMain Boost::system Threads::Threads yaml-cpp::yaml-cpp)
+  target_link_libraries(erxd_tests PRIVATE Catch2::Catch2WithMain Boost::system Boost::log Boost::log_setup Boost::thread Threads::Threads yaml-cpp::yaml-cpp)
 
   include(Catch)
   catch_discover_tests(erxd_tests)
